@@ -55,10 +55,10 @@ class AwesomeAssistantsBuilder:
 
     def get_assistants_markdown(self):
         assistants = self.get_assistants()
-        md = ""
-        for key, entry in assistants.items():
-            md += f"- [{entry['emoji']} {entry['name']}](#{key.replace('_', '-')})\n"
-
+        md = "".join(
+            f"- [{entry['emoji']} {entry['name']}](#{key.replace('_', '-')})\n"
+            for key, entry in assistants.items()
+        )
         for key, entry in assistants.items():
             md += f"\n ### {entry['name']}\n\n"
             md += f"{entry['emoji']} {entry['welcome_message']} \n"
@@ -70,8 +70,7 @@ class AwesomeAssistantsBuilder:
         readme_file = pathlib.Path(__file__).parent.resolve().joinpath("README.md")
         start = '[//]: # (START-contents)'
         end = '[//]: # (END-contents)'
-        with open(readme_file) as f:
-            readme_stub = f.read()
+        readme_stub = pathlib.Path(readme_file).read_text()
         toc_str = self.get_assistants_markdown()
         readme = self.replace_text_between(readme_stub, start, end, "\n" + toc_str + "\n\n")
         if readme_stub != readme:
